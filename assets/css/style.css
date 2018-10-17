@@ -1,3 +1,34 @@
 body {
-	background: silver;
+	background: orange;
+	font-family: 'Source Code Pro', monospace;
+}
+
+.container {
+	text-align: center;
+	margin: 100px auto;
+	height: 400px;
+	padding: 50px 10px;
+	width: 80%;
+	background: white;
+	border: 2px solid black;
+	border-radius: 15px;
+}
+
+.question {
+	/*font-size: 2rem;*/
+	margin: 10px;
+}
+
+.response {
+	display: block;
+	margin: 10px auto;
+}
+
+
+#start-trivia-game {
+	margin: 0 auto;
+}
+
+#countdown-timer {
+	font-family: 'Orbitron', sans-serif;
 }
