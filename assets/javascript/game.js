@@ -1,19 +1,20 @@
 // JavaScript Trivia Game by Scott Ratigan
 
 // Globals:
-const msToDisplayAnswer = 1000;
-const defaultSecondsToAnswer = 9999;
+const msToDisplayAnswer = 5000;
+const defaultSecondsToAnswer = 30;
 var questionList = [];
 
 // Set up list of trivia questions:
-addQuestionToList('What will console.log(3 < 2 < 1) show in the console?', 'true', ['false', 'undefined', 'null', "Error, can't perform 2 comparisons at once."],  'The statement evaluates true. Equality operators have a left-to-right associativity and the first comparison (3 < 2) returns a 0.',  '1.jpg', 30);
-addQuestionToList('The conditional statement (false == 0) will evaluate to?', 'true', ['false', 'error'],  'True. 0 is considered a "falsy" value.',  '2.jpg', 20);
-addQuestionToList('The conditional statement ("" == 0) will evaluate to?', 'true', ['false', 'undefined', 'null'],  'True.',  '3.jpg', 20);
-addQuestionToList('Given the following:<br>for(var i = 0; i < 10; i++ {<br>&emsp;&emsp;console.log(i);<br>}<br>i has scope outside of the for loop?', 'true', ['false'],  'True, oddly enough. Replacing the var declaration with let will give i a scope restricted to the code block, however.', '4.jpg', 25);
+addQuestionToList('What will console.log(3 < 2 < 1) show in the console?', 'true', ['false', 'undefined', 'null', "Error, can't perform 2 comparisons at once."],  'The statement evaluates true. Equality operators have a left-to-right associativity and the first comparison (3 < 2) returns a 0.', 30);
+addQuestionToList('The conditional statement (false == 0) will evaluate to?', 'true', ['false', 'error', 'undefined'],  'True. 0 is considered a "falsy" value.', 20);
+addQuestionToList('The conditional statement ("" == 0) will evaluate to?', 'true', ['false', 'undefined', 'null'],  'True.', 20);
+addQuestionToList('Given the following:<br>for(var i = 0; i < 10; i++ {<br>&emsp;&emsp;console.log(i);<br>}<br>Does i have a value outside the for loop?', 'true', ['false'],  'True, oddly enough. Replacing the var declaration with let will give i a scope restricted to the code block, however.', 25);
 let inspirationalQuotesList = ["Never define your success by somebody else's success. I never looked at another man's code to tell how clean mine should be.", "I drank a whole pot of coffee. Some call that I problem but I need to... go.", "You took the caffeine challenge and lost your balance. Your code's not compiling, we under water counting bitcoins by the thousands.", "It don't make sense. You're either a coder from the start, or an actor in a bootcamp tryin' to play the part.", "Rearrange the whole page with my rugged DOMs, won't need a library I can vanilla with no qualms."];
 
 var triviaGame = { // The entire game is an object, with functions to perform the various game functions.
 	correctResponses: 0,
+	incorrectResponses: 0,
 	questionIndex: 0,
 	totalQuestions: questionList.length,
 	highScore: 0,
@@ -23,6 +24,7 @@ var triviaGame = { // The entire game is an object, with functions to perform th
 	startGame: function() {
 		triviaGame.startButton.hide();
 		triviaGame.correctResponses = 0;
+		triviaGame.incorrectResponses = 0;
 		triviaGame.questionIndex = 0;
 		shuffleArray(questionList);
 		triviaGame.displayQuestion();
@@ -31,7 +33,7 @@ var triviaGame = { // The entire game is an object, with functions to perform th
 		triviaGame.gameDiv.empty();
 		triviaGame.gameDiv.append('<p>GAME OVER</p>')
 		let correctPercentage = Math.floor((triviaGame.correctResponses / triviaGame.totalQuestions) * 100);
-		triviaGame.gameDiv.append(`<p>You got ${triviaGame.correctResponses} / ${triviaGame.totalQuestions} correct (${correctPercentage}%).`);
+		triviaGame.gameDiv.append(`<p>Correct answers: ${triviaGame.correctResponses}<br>Incorrect answers: ${triviaGame.incorrectResponses}<br>${correctPercentage}% correct.</p>`)
 		if (triviaGame.correctResponses === triviaGame.totalQuestions) {
 			triviaGame.gameDiv.append('<p>Well played, you got a perfect score!</p>');
 			triviaGame.highScore = triviaGame.correctResponses;
@@ -61,7 +63,7 @@ var triviaGame = { // The entire game is an object, with functions to perform th
 		let answersAreaDiv = $('<div>');
 		answersAreaDiv.attr('id', 'answer-button-div');
 		triviaGame.gameDiv.append(answersAreaDiv);
-		triviaGame.buttonDiv = $('#answer-button-div'); // todo: can this be more specific?
+		triviaGame.buttonDiv = $('#answer-button-div');
 		// Append the randomized answer list to the trivia area:
 		questionList[triviaGame.questionIndex].responseButtons.forEach(function(buttonToAppend) {
 			triviaGame.buttonDiv.append(buttonToAppend);
@@ -72,7 +74,7 @@ var triviaGame = { // The entire game is an object, with functions to perform th
 		// First clear out the answer buttons:
 		$('#answer-button-div').empty();
 		// Then display the answer:
-		$('#answer-button-div').append(questionList[triviaGame.questionIndex].correctAnswerDescription);
+		triviaGame.gameDiv.append(questionList[triviaGame.questionIndex].correctAnswerDescription);
 		// Display correct answer for set amount of time, then either go to next question or end game.
 		if (triviaGame.questionIndex + 1 < questionList.length) {
 			triviaGame.questionIndex++;
@@ -91,6 +93,7 @@ var triviaGame = { // The entire game is an object, with functions to perform th
 		}
 		else { // The response was NOT correct:
 			triviaGame.gameDiv.append('<h3>INCORRECT :/</h3>');
+			triviaGame.incorrectResponses++;
 		}
 		// Either way, show the correct answer:
 		triviaGame.displayCorrectAnswer();
@@ -127,7 +130,7 @@ var clock = { // The entire clock is an object which tracks time and has methods
 	}
 }
 
-function TriviaQuestion(question, correctResponse, incorrectResponses, correctAnswerDescription, correctAnswerPictureSRC, secondsToAnswer) {
+function TriviaQuestion(question, correctResponse, incorrectResponses, correctAnswerDescription, secondsToAnswer) {
 	// Constructor for the TriviaQuestion object. This builds the question objects from string arguments.
 	this.questionDiv = `<div class='question'>${question}</div>`;
 	this.responseButtons = [];
@@ -138,7 +141,6 @@ function TriviaQuestion(question, correctResponse, incorrectResponses, correctAn
 	let button = buildButton(correctResponse, true);
 	this.responseButtons.push(button);
 	this.correctAnswerDescription = correctAnswerDescription;
-	this.correctAnswerPictureSRC = correctAnswerPictureSRC;
 	this.secondsToAnswer = secondsToAnswer || defaultSecondsToAnswer; // Use default value if no time was specified during construction.
 	function buildButton(buttonText, isCorrectResponse) {
 		// Creates answer buttons, which are part of the question object.
@@ -155,9 +157,9 @@ function TriviaQuestion(question, correctResponse, incorrectResponses, correctAn
 	}
 }
 
-function addQuestionToList(question, correctResponse, incorrectResponses, correctAnswerDescription, correctAnswerPictureSRC, secondsToAnswer) {
+function addQuestionToList(question, correctResponse, incorrectResponses, correctAnswerDescription, secondsToAnswer) {
 	// Allows constructor function to be called easily. Not strictly necessary, but it makes the array construction a bit cleaner up top.
-	let newQuestion = new TriviaQuestion(question, correctResponse, incorrectResponses, correctAnswerDescription, correctAnswerPictureSRC, secondsToAnswer);
+	let newQuestion = new TriviaQuestion(question, correctResponse, incorrectResponses, correctAnswerDescription, secondsToAnswer);
 	questionList.push(newQuestion);
 }
 
