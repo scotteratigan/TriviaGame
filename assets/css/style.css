@@ -13,15 +13,25 @@ button {
 
 h1 {
 	font-size: 2.5rem;
+	margin: 10px 0;
 }
 
 h3 {
 	font-size: 1.2rem;
 }
 
+h5 {
+	font-size: .75rem;
+	margin: 10px 0;
+}
+
 html, main {
 	height: 100%;
 	overflow: hidden;
+}
+
+em {
+	font-style: italic;
 }
 
 p {
@@ -35,7 +45,7 @@ p {
 	border: 2px solid black;
 	height: 500px;
 	margin: 100px auto;
-	padding: 50px 10px;
+	padding: 10px;
 	text-align: center;
 	text-shadow: 0px 0px 6px rgba(0,0,0,0.55);
 	width: 80%;
@@ -51,20 +61,26 @@ p {
 	margin: 10px;
 }
 
+#trivia-container {
+	
+}
+
 #countdown-timer {
 	font-family: 'Orbitron', sans-serif;
 	text-align: right;
 }
 
 #start-trivia-game {
-	font-size: 1.1rem;
+	display: block; /*required to set margin auto*/
 	margin: 0 auto;
+	font-size: 1.1rem;
 }
 
 #trivia-container {
 	background: rgba(255, 255, 255, .8);
+	border: 1px solid black;
 	border-radius: 15px;
+	margin-top: 100px;
 	padding: 30px 10%;
 	text-align: left;
-	/*display: none;*/
 }
