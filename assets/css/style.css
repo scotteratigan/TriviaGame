@@ -1,34 +1,70 @@
 body {
-	background: orange;
+	background: url("../images/pimpmybackground.png") no-repeat center center fixed;
+	background-size: cover;
 	font-family: 'Source Code Pro', monospace;
+	height: 100%;
+}
+
+button {
+	background: rgb(255, 229, 70);
+	/*padding: 10px 0;*/
+	transform: skewX(-20deg);
+}
+
+h1 {
+	font-size: 2.5rem;
+}
+
+h3 {
+	font-size: 1.2rem;
+}
+
+html, main {
+	height: 100%;
+	overflow: hidden;
+}
+
+p {
+	padding: .8rem 0;
 }
 
 .container {
-	text-align: center;
-	margin: 100px auto;
-	height: 400px;
-	padding: 50px 10px;
-	width: 80%;
-	background: white;
-	border: 2px solid black;
+	background: url("../images/xzibit_computer_with_opacity.jpg") no-repeat center center fixed;
+	background-size: cover;
 	border-radius: 15px;
+	border: 2px solid black;
+	height: 500px;
+	margin: 100px auto;
+	padding: 50px 10px;
+	text-align: center;
+	text-shadow: 0px 0px 6px rgba(0,0,0,0.55);
+	width: 80%;
+	height: 65%;
 }
 
 .question {
-	/*font-size: 2rem;*/
 	margin: 10px;
 }
 
 .response {
 	display: block;
-	margin: 10px auto;
-}
-
-
-#start-trivia-game {
-	margin: 0 auto;
+	margin: 10px;
 }
 
 #countdown-timer {
 	font-family: 'Orbitron', sans-serif;
+	text-align: right;
+}
+
+#start-trivia-game {
+	font-size: 1.1rem;
+	margin: 0 auto;
+}
+
+#trivia-container {
+	background: rgba(255, 255, 255, .8);
+	border-radius: 15px;
+	padding: 30px 10%;
+	text-align: left;
+	/*display: none;*/
 }

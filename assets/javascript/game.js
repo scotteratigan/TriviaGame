@@ -1,94 +1,104 @@
 // For variety, using vanilla JS
+// Actually, after talking to a TA, rewriting in jQuery, lol
 
 const msToDisplayAnswer = 1000;
+const defaultSecondsToAnswer = 9999;
 var questionList = [];
-addQuestionToList('Click  1?', ' 1', ['2', '3', '4'],  '1 was the number',  '1.jpg', 10);
-addQuestionToList('Click  2?', ' 2', ['1', '3', '4'],  '2 was the number',  '2.jpg', 10);
-addQuestionToList('Click  3?', ' 3', ['1', '2', '4'],  '3 was the number',  '3.jpg', 10);
-addQuestionToList('Click  4?', ' 4', ['1', '2', '3'],  '4 was the number',  '4.jpg', 10);
-addQuestionToList('Click  5?', ' 5', ['2', '3', '4'],  '5 was the number',  '5.jpg', 10);
-// addQuestionToList('Click  6?', ' 6', ['2', '3', '4'],  '6 was the number',  '6.jpg', 10);
-// addQuestionToList('Click  7?', ' 7', ['2', '3', '4'],  '7 was the number',  '7.jpg', 10);
-// addQuestionToList('Click  8?', ' 8', ['2', '3', '4'],  '8 was the number',  '8.jpg', 10);
-// addQuestionToList('Click  9?', ' 9', ['2', '3', '4'],  '9 was the number',  '9.jpg', 10);
-// addQuestionToList('Click 10?', '10', ['2', '3', '4'], '10 was the number', '10.jpg', 10);
+addQuestionToList('What will console.log(3 < 2 < 1) show in the console?', 'true', ['false', 'undefined', 'null', "Error, can't perform 2 comparisons at once."],  'The statement evaluates true. Equality operators have a left-to-right associativity and the first comparison (3 < 2) returns a 0.',  '1.jpg', 30);
+addQuestionToList('The conditional statement (false == 0) will evaluate to?', 'true', ['false', 'error'],  'True. 0 is considered a "falsy" value.',  '2.jpg', 20);
+addQuestionToList('The conditional statement ("" == 0) will evaluate to?', 'true', ['false', 'undefined', 'null'],  'True.',  '3.jpg', 20);
+addQuestionToList('Given the following:<br>for(var i = 0; i < 10; i++ {<br>&emsp;&emsp;console.log(i);<br>}<br>i has scope outside of the for loop?', 'true', ['false'],  'True, oddly enough. Replacing the var declaration with let will give i a scope restricted to the code block, however.', '4.jpg', 25);
+let inspirationalQuotesList = ["Never define your success by somebody else's success. I never looked at another man's code to tell how clean mine should be.", "I drank a whole pot of coffee. Some call that I problem but I need to... go.", "You took the caffeine challenge and lost your balance. Your code's not compiling, we under water counting bitcoins by the thousands.", "It don't make sense. You're either a coder from the start, or an actor in a bootcamp tryin' to play the part.", "Rearrange the whole page with my rugged DOMs, won't need a library I can vanilla with no qualms."];
+$('#trivia-container').hide();
 
 var triviaGame = {
 	correctResponses: 0,
 	questionIndex: 0,
 	totalQuestions: questionList.length,
 	highScore: 0,
-	gameDiv: document.querySelector('#trivia-container'),
-	startButton: document.querySelector('#start-trivia-game'),
+	gameDiv: $('#trivia-container'),
+	startButton: $('#start-trivia-game'),
+	//gameDiv: document.querySelector('#trivia-container'),
+	//startButton: document.querySelector('#start-trivia-game'),
+	buttonDiv: null,
 	startGame: function() {
-		triviaGame.startButton.style.display = 'none';
+		//triviaGame.startButton.style.display = 'none';
+		triviaGame.startButton.hide();
+		$('#trivia-container').show();
 		triviaGame.correctResponses = 0;
 		triviaGame.questionIndex = 0;
 		shuffleArray(questionList);
 		triviaGame.displayQuestion();
 	},
 	endGame: function() {
-		triviaGame.gameDiv.innerHTML = '<p>GAME OVER</p>';
-		triviaGame.gameDiv.innerHTML += `<p>You got ${triviaGame.correctResponses} / ${triviaGame.totalQuestions} correct.`;
+		triviaGame.gameDiv.empty();
+		triviaGame.gameDiv.append('<p>GAME OVER</p>')
+		let correctPercentage = Math.floor((triviaGame.correctResponses / triviaGame.totalQuestions) * 100);
+		triviaGame.gameDiv.append(`<p>You got ${triviaGame.correctResponses} / ${triviaGame.totalQuestions} correct (${correctPercentage}%).`);
 		if (triviaGame.correctResponses === triviaGame.totalQuestions) {
-			triviaGame.gameDiv.innerHTML += '<p>Well played, you got a perfect score!</p>';
+			triviaGame.gameDiv.append('<p>Well played, you got a perfect score!</p>');
 			triviaGame.highScore = triviaGame.correctResponses;
 		}
 		else if (triviaGame.correctResponses > triviaGame.highScore) {
-			triviaGame.gameDiv.innerHTML += '<p>You set a new high score!</p>';
+			triviaGame.gameDiv.append('<p>You set a new high score!</p>');
 			triviaGame.highScore = triviaGame.correctResponses;
 		}
 		else if (triviaGame.correctResponses === triviaGame.highScore) {
-			triviaGame.gameDiv.innerHTML += '<p>You have tied the high score!</p>';
+			triviaGame.gameDiv.append('<p>You have tied the high score!</p>');
 		}
 		else {
-			triviaGame.gameDiv.innerHTML += `<p>The high score is still ${triviaGame.highScore} / ${triviaGame.totalQuestions}</p>`
+			triviaGame.gameDiv.append(`<p>The high score is still ${triviaGame.highScore} / ${triviaGame.totalQuestions}</p>`);
 		}
-		triviaGame.startButton.style.display = 'block';
+		let randomQuote = inspirationalQuotesList[Math.floor(Math.random() * inspirationalQuotesList.length)];
+		triviaGame.gameDiv.append(`<p>"<em>${randomQuote}</em>" - Xzibit, probably</p><br>`);
+		// triviaGame.startButton.style.display = 'block';
+		triviaGame.startButton.show();
 	},
 	displayQuestion: function() {
 		// Clear out trivia area and add the question:
-		triviaGame.gameDiv.innerHTML = questionList[triviaGame.questionIndex].questionDiv;
+		triviaGame.gameDiv.empty();
+		triviaGame.gameDiv.append(questionList[triviaGame.questionIndex].questionDiv);
 		// Shuffle the order of possible answers:
 		shuffleArray(questionList[triviaGame.questionIndex].responseButtons);
+		// Create a new div for the answer buttons to live in.
+		let answersAreaDiv = $('<div>');
+		answersAreaDiv.attr('id', 'answer-button-div');
+		triviaGame.gameDiv.append(answersAreaDiv);
+		triviaGame.buttonDiv = $('#answer-button-div'); // todo: can this be more specific?
 		// Append the randomized answer list to the trivia area:
 		questionList[triviaGame.questionIndex].responseButtons.forEach(function(buttonToAppend) {
-			triviaGame.gameDiv.innerHTML += buttonToAppend;
+			triviaGame.buttonDiv.append(buttonToAppend);
 		});
-		// Attach event listeners to all buttons.
-		document.querySelectorAll('.response').forEach(function(button) {
-			// Needs a forEach because you can't attach an event listener to a NodeList.
-			button.addEventListener('click', triviaGame.guessAnswer);
-		})
 		clock.start(); // Start the countdown.
 	},
 	displayCorrectAnswer: function() {
-		// Display the correct answer under the correct/incorrect text.
-		triviaGame.gameDiv.innerHTML += questionList[triviaGame.questionIndex].correctAnswerDescription;
+		// Displays the correct answer under the correct/incorrect text.
+		// First clear out the answer buttons:
+		$('#answer-button-div').empty();
+		$('#answer-button-div').append(questionList[triviaGame.questionIndex].correctAnswerDescription);
 		if (triviaGame.questionIndex + 1 < questionList.length) {
 			triviaGame.questionIndex++;
-			// If there is another question in the list, show it after delay.
+			// If there is another question in the list, show it after delay:
 			setTimeout(triviaGame.displayQuestion, msToDisplayAnswer);
 		}
-		else {
-			// Run endGame function, after delay.
+		else { // Else, run endGame function, after delay:
 			setTimeout(triviaGame.endGame, msToDisplayAnswer);
 		}
 	},
 	guessAnswer: function() {
 		clock.stop();
 		if (event.target.id === 'correct-response') {
-			triviaGame.gameDiv.innerHTML = '<h3>CORRECT :)</h3>';
+			triviaGame.gameDiv.append('<h3>CORRECT :)</h3>');
 			triviaGame.correctResponses++;
 		}
 		else {
-			triviaGame.gameDiv.innerHTML = '<h3>INCORRECT :/</h3>';
+			triviaGame.gameDiv.append('<h3>INCORRECT :/</h3>');
 		}
 		triviaGame.displayCorrectAnswer();
 	},
 	didntGuessAnswer: function() {
 		clock.stop();
-		triviaGame.gameDiv.innerHTML = '<h3>Sorry, time ran out.</h3>';
+		triviaGame.gameDiv.append('<h3>Sorry, time ran out.</h3>');
 		triviaGame.displayCorrectAnswer();
 	}
 }
@@ -113,7 +123,7 @@ var clock = {
 		clock.display();
 	},
 	display: function() {
-		clock.clockDiv.textContent = clock.timeRemaining;
+		clock.clockDiv.textContent = `Time remaining: ${clock.timeRemaining} seconds.`;
 	}
 }
 
@@ -122,20 +132,37 @@ function TriviaQuestion(question, correctResponse, incorrectResponses, correctAn
 	this.questionDiv = `<div class='question'>${question}</div>`;
 	this.responseButtons = [];
 	for (let i = 0; i < incorrectResponses.length; i++) {
-		this.responseButtons.push(`<button class='response incorrect-response'>${incorrectResponses[i]}</button>`);
+		let button = buildButton(incorrectResponses[i], false);
+		this.responseButtons.push(button);
 	}
-	this.responseButtons.push(`<button class='response' id='correct-response'>${correctResponse}</button>`);
+	let button = buildButton(correctResponse, true);
+	this.responseButtons.push(button);
 	this.correctAnswerDescription = correctAnswerDescription;
 	this.correctAnswerPictureSRC = correctAnswerPictureSRC;
-	this.secondsToAnswer = secondsToAnswer;
+	this.secondsToAnswer = secondsToAnswer || defaultSecondsToAnswer; // Use default value if no time was specified during construction.
+	function buildButton(buttonText, isCorrectResponse) {
+		// Creates answer buttons:
+		let button = $('<button>');
+		button.text(buttonText);
+		if (isCorrectResponse) {
+			button.attr('class', 'response');
+			button.attr('id', 'correct-response');
+		}
+		else {
+			button.attr('class', 'response incorrect-response');
+		}
+		return button;
+	}
 }
 
 function addQuestionToList(question, correctResponse, incorrectResponses, correctAnswerDescription, correctAnswerPictureSRC, secondsToAnswer) {
+	// Allows constructor function to be called easily. Not strictly necessary, but it makes the array construction a bit cleaner up top.
 	let newQuestion = new TriviaQuestion(question, correctResponse, incorrectResponses, correctAnswerDescription, correctAnswerPictureSRC, secondsToAnswer);
 	questionList.push(newQuestion);
 }
 
 function shuffleArray(array) {
+	// A generic function to shuffle an array. This ensures a randomized order for questions and answers without worrying about repitition.
     for (let i = array.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         let tmp = array[i];
@@ -144,5 +171,8 @@ function shuffleArray(array) {
     }
 }
 
-document.querySelector('#start-trivia-game').addEventListener('click', triviaGame.startGame);
 // Hey, I just loaded, and this is crazy, but here's my id, call back maybe?
+document.querySelector('#start-trivia-game').addEventListener('click', triviaGame.startGame);
+
+// Click handler for answering questions. Because it's attached to the document, it will fire on any buttons that are dynamically created.
+$(document).on('click', '.response', triviaGame.guessAnswer);
