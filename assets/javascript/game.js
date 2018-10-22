@@ -1,15 +1,20 @@
 // JavaScript Trivia Game by Scott Ratigan
 
 // Globals:
-const msToDisplayAnswer = 5000; 
+const msToDisplayAnswer = 10000; 
 const defaultSecondsToAnswer = 30;
 var questionList = [];
 
 // Set up list of trivia questions:
+// addQuestionToList(question, correctResponse, incorrectResponses, correctAnswerDescription, secondsToAnswer)
+// addQuestionToList('question', 'correct response', ['incorrect', 'responses'], 'description', 30);
 addQuestionToList('What will console.log(3 < 2 < 1) show in the console?', 'true', ['false', 'undefined', 'null', "Error, can't perform 2 comparisons at once."],  'The statement evaluates true. Equality operators have a left-to-right associativity and the first comparison (3 < 2) returns a 0.', 30);
 addQuestionToList('The conditional statement (false == 0) will evaluate to?', 'true', ['false', 'error', 'undefined'],  'True. 0 is considered a "falsy" value.', 20);
 addQuestionToList('The conditional statement ("" == 0) will evaluate to?', 'true', ['false', 'undefined', 'null'],  'True.', 20);
 addQuestionToList('Given the following:<br>for(var i = 0; i < 10; i++ {<br>&emsp;&emsp;console.log(i);<br>}<br>Does i have a value outside the for loop?', 'true', ['false'],  'True, oddly enough. Replacing the var declaration with let will give i a scope restricted to the code block, however.', 25);
+addQuestionToList('Which code segment allows you to alert"YAY", given the following code:<br><br>function outer() {<br>&emsp;&emsp;function inner() {<br>&emsp;&emsp;&emsp;&emsp;alert("YAY");<br>&emsp;&emsp;}<br>&emsp;&emsp;return inner;<br>}', 'outer()()', ['outer.alert()', 'It cannot be invoked.', 'None of the given options will display alert.'], 'Whoa, a return value can be a function, and that function can be invoked with ()() in this case.', 35);
+addQuestionToList('How can you get a random number between 1 and 3?', 'Math.floor(Math.random() * 3) + 1', ['floor(Math.random(1, 3))', 'Math.floor(Math.random * 3 + 1)', 'Math.random(1, 3)'], "Math.floor(Math.random() * 3) + 1 is correct.<br>Math.random() returns a value between zero and .9999ish. Multiply that by the maximum number you want to get. Math.floor will remove the decimal for you. Lastly, add the minimum integer you'd like, if greater than zero", 30);
+
 let inspirationalQuotesList = ["Never define your success by somebody else's success. I never looked at another man's code to tell how clean mine should be.", "I drank a whole pot of coffee. Some call that I problem but I need to... go.", "You took the caffeine challenge and lost your balance. Your code's not compiling, we under water counting bitcoins by the thousands.", "It don't make sense. You're either a coder from the start, or an actor in a bootcamp tryin' to play the part.", "Rearrange the whole page with my rugged DOMs, won't need a library I can vanilla with no qualms."];
 
 var triviaGame = { // The entire game is an object, with functions to perform the various game functions.
