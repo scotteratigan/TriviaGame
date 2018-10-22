@@ -1,7 +1,7 @@
 // JavaScript Trivia Game by Scott Ratigan
 
 // Globals:
-const msToDisplayAnswer = 5000;
+const msToDisplayAnswer = 5000; 
 const defaultSecondsToAnswer = 30;
 var questionList = [];
 
